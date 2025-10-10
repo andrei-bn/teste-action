@@ -1,7 +1,7 @@
 name: Mostrar Data
 
 on:
-  push:               
+  push:
   workflow_dispatch:
 
 jobs:
@@ -9,5 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Exibir data atual
-        run: date
+      - name: Exibir data e hora do Brasil
+        run: |
+          export TZ=America/Sao_Paulo
+          echo "Data e hora (Brasil): $(date '+%d/%m/%Y %H:%M:%S')"
