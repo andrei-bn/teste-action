@@ -1,0 +1,13 @@
+name: Mostrar Data
+
+on:
+  push:               # Executa quando houver push
+  workflow_dispatch:  # Permite execução manual
+
+jobs:
+  mostrar-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Exibir data atual
+        run: date
