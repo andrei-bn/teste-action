@@ -1,1 +1,80 @@
+# Caminho: .github/workflows/complexo.yml
 
+name: Workflows Complexos (Seq/Paralelo/Criar)
+
+on:
+  workflow_dispatch: # Vamos usar só o manual para este
+
+jobs:
+  # Tarefa 10: Action com vários steps (em sequência)
+  # Por padrão, todos os "steps" dentro de um "job" rodam em sequência.
+  job-sequencial:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Step 1 - Mostrar Data e Usuário
+        run: |
+          echo "Iniciando Step 1..."
+          echo "Data: $(date)"
+          echo "Usuário: ${{ github.actor }}"
+          
+      - name: Step 2 - Contar arquivos
+        # Este step só roda depois que o Step 1 termina
+        run: |
+          echo "Iniciando Step 2..."
+          echo "HTML: $(find . -type f -name '*.html' | wc -l)"
+          echo "CSS: $(find . -type f -name '*.css' | wc -l)"
+          echo "JS: $(find . -type f -name '*.js' | wc -l)"
+
+  # Tarefa 11: Action "sem sequência" (em paralelo)
+  # Para rodar em paralelo, você cria "jobs" diferentes.
+  # "job-paralelo-1" e "job-paralelo-2" vão rodar ao mesmo tempo.
+  job-paralelo-1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mostrar Data e Usuário (Paralelo)
+        run: |
+          sleep 5 # Simula uma tarefa demorada
+          echo "JOB 1 (Paralelo): Data: $(date) | Usuário: ${{ github.actor }}"
+
+  job-paralelo-2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Contar arquivos (Paralelo)
+        run: |
+          echo "JOB 2 (Paralelo): Contando arquivos..."
+          echo "JOB 2 (Paralelo): HTML: $(find . -type f -name '*.html' | wc -l)"
+          echo "JOB 2 (Paralelo): CSS: $(find . -type f -name '*.css' | wc -l)"
+          echo "JOB 2 (Paralelo): JS: $(find . -type f -name '*.js' | wc -l)"
+          
+  # Tarefa 12: Criar um arquivo de readme e preencher
+  criar-arquivo:
+    runs-on: ubuntu-latest
+    # Este job precisa de permissão para escrever de volta no repositório
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Criar arquivo de log
+        run: |
+          echo "Este arquivo foi gerado automaticamente pela GitHub Action." > LOG_DA_ACTION.md
+          echo "Data da execução: $(date)" >> LOG_DA_ACTION.md
+
+      - name: Fazer commit do novo arquivo
+        run: |
+          # Configura o git com um usuário bot
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # Adiciona, faz commit e empurra o novo arquivo
+          git add LOG_DA_ACTION.md
+          
+          # O "|| true" evita que o workflow falhe se não houver nada para commitar
+          git commit -m "Adiciona arquivo de log gerado pela Action" || true
+          git push
