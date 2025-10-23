@@ -1,1 +1,35 @@
+name: Tarefas Agendadas (Cron)
+on:
+  schedule:
+    - cron: '0 3 * * *'    
 
+    - cron: '1 0 * * 6'    
+
+    - cron: '0 0 * * *'
+  
+  workflow_dispatch:
+
+jobs:
+
+  tarefa-noturna:
+
+    if: github.event.schedule == '0 3 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Executando a tarefa agendada da noite (3:00 UTC)..."
+  tarefa-sabado:
+    if: github.event.schedule == '1 0 * * 6'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Executando a tarefa agendada de Sábado..."
+  contar-arquivos-meia-noite:
+    if: github.event.schedule == '0 0 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+      - name: Contar todos os arquivos
+        run: |
+          echo "Contando a quantidade total de arquivos no repositório..."
+          TOTAL_ARQUIVOS=$(find . -type f | wc -l)
+          echo "Total de arquivos: $TOTAL_ARQUIVOS"
