@@ -10,9 +10,6 @@ jobs:
   tarefas-simples:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Hello World
-        run: echo "Hello World!"
-
       - name: 2. Mostrar Data, Hora e Usuário
         run: |
           export TZ=America/Sao_Paulo
