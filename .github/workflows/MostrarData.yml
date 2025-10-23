@@ -1,15 +1,54 @@
-name: Mostrar Data
+
+name: Tarefas de Push
 
 on:
   push:
   workflow_dispatch:
 
 jobs:
-  mostrar-data:
-    runs-on: ubuntu-latest
 
+  tarefas-simples:
+    runs-on: ubuntu-latest
     steps:
-      - name: Exibir data e hora do Brasil
+      - name: 1. Hello World
+        run: echo "Hello World!"
+
+      - name: 2. Mostrar Data, Hora e Usuário
         run: |
           export TZ=America/Sao_Paulo
           echo "Data e hora (Brasil): $(date '+%d/%m/%Y %H:%M:%S')"
+          echo "Usuário do Push: ${{ github.actor }}"
+          
+      - name: 3. Calcular 2+2 e usar variável
+        run: |
+          RESULTADO=$((2+2))
+          echo "O resultado de 2+2 é $RESULTADO"
+
+  tarefas-de-arquivos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 4. Listar arquivos
+        run: |
+          echo "Listando arquivos no repositório:"
+          ls -l
+
+      - name: 5. Contar arquivos HTML
+        run: |
+          CONTAGEM_HTML=$(find . -type f -name "*.html" | wc -l)
+          echo "Total de arquivos HTML: $CONTAGEM_HTML"
+
+      - name: 6. Alertar sobre arquivos maiores que 100KB
+        run: |
+          echo "Verificando arquivos maiores que 100KB..."
+          # Encontra arquivos (-type f) maiores que 100k
+          # Se encontrar algum (wc -l > 0), lista os arquivos e falha o job (exit 1)
+          if [ $(find . -type f -size +100k | wc -l) -gt 0 ]; then
+            echo "ALERTA: Arquivos maiores que 100KB encontrados!"
+            find . -type f -size +100k -exec ls -lh {} +
+            exit 1
+          else
+            echo "Nenhum arquivo grande (maior que 100KB) encontrado."
+          fi
