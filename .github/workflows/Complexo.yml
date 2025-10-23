@@ -1,13 +1,9 @@
-# Caminho: .github/workflows/complexo.yml
-
 name: Workflows Complexos (Seq/Paralelo/Criar)
 
 on:
-  workflow_dispatch: # Vamos usar só o manual para este
+  workflow_dispatch:
 
 jobs:
-  # Tarefa 10: Action com vários steps (em sequência)
-  # Por padrão, todos os "steps" dentro de um "job" rodam em sequência.
   job-sequencial:
     runs-on: ubuntu-latest
     steps:
@@ -21,16 +17,12 @@ jobs:
           echo "Usuário: ${{ github.actor }}"
           
       - name: Step 2 - Contar arquivos
-        # Este step só roda depois que o Step 1 termina
         run: |
           echo "Iniciando Step 2..."
           echo "HTML: $(find . -type f -name '*.html' | wc -l)"
           echo "CSS: $(find . -type f -name '*.css' | wc -l)"
           echo "JS: $(find . -type f -name '*.js' | wc -l)"
-
-  # Tarefa 11: Action "sem sequência" (em paralelo)
-  # Para rodar em paralelo, você cria "jobs" diferentes.
-  # "job-paralelo-1" e "job-paralelo-2" vão rodar ao mesmo tempo.
+          
   job-paralelo-1:
     runs-on: ubuntu-latest
     steps:
@@ -50,11 +42,10 @@ jobs:
           echo "JOB 2 (Paralelo): HTML: $(find . -type f -name '*.html' | wc -l)"
           echo "JOB 2 (Paralelo): CSS: $(find . -type f -name '*.css' | wc -l)"
           echo "JOB 2 (Paralelo): JS: $(find . -type f -name '*.js' | wc -l)"
-          
-  # Tarefa 12: Criar um arquivo de readme e preencher
+
   criar-arquivo:
     runs-on: ubuntu-latest
-    # Este job precisa de permissão para escrever de volta no repositório
+
     permissions:
       contents: write
     steps:
